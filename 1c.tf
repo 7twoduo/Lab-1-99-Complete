@@ -110,10 +110,11 @@ resource "aws_lb_target_group" "hidden_target_group" {
   }
 }
 #                                   Listeners for TARGET GROUP
-import {
-  to = aws_route53_zone.primary
-  id = "Your Registered Domain (identifier)"
-}
+#If no reasource identifier is returned, then this will be used to import it
+#import {
+#  to = aws_route53_zone.primary
+#  id = "Hosted zone identifier"
+#}
 
 resource "aws_route53_zone" "primary" {
   name = var.root_domain_name
