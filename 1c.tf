@@ -60,11 +60,11 @@ resource "aws_s3_bucket_policy" "lb_bucket_policy" {
     ]
   })
 }
-
-#import {
-#  to = aws_lb.hidden_alb
-#  id = "arn:aws:elasticloadbalancing:us-east-1:814910273374:loadbalancer/app/LoadExternal/9b9985b57737311d"
-#}
+# Use if terraform doesn't return an identifier
+# import {
+#   to = aws_lb.hidden_alb
+#   id = "arn:aws:elasticloadbalancing:us-east-1:814910273374:loadbalancer/app/LoadExternal/9b9985b57737311d"
+# }
 
 resource "aws_lb" "hidden_alb" {
   name               = "LoadExternal"
@@ -110,14 +110,30 @@ resource "aws_lb_target_group" "hidden_target_group" {
   }
 }
 #                                   Listeners for TARGET GROUP
-#If no reasource identifier is returned, then this will be used to import it
-#import {
-#  to = aws_route53_zone.primary
-#  id = "Hosted zone identifier"
-#}
+ import {
+   to = aws_route53domains_registered_domain.unshieldedhollow
+   id = "unshieldedhollow.click" # Your domain here
+ }
+
 
 resource "aws_route53_zone" "primary" {
   name = var.root_domain_name
+}
+resource "aws_route53domains_registered_domain" "unshieldedhollow" {
+  domain_name = var.root_domain_name
+
+  name_server {
+    name = aws_route53_zone.primary.name_servers[0]
+  }
+  name_server {
+    name = aws_route53_zone.primary.name_servers[1]
+  }
+  name_server {
+    name = aws_route53_zone.primary.name_servers[2]
+  }
+  name_server {
+    name = aws_route53_zone.primary.name_servers[3]
+  }
 }
 resource "aws_acm_certificate" "hidden_target_group2" {
   domain_name       = var.root_domain_name
@@ -314,17 +330,6 @@ resource "aws_cloudwatch_dashboard" "chewbacca_dashboard01" {
 }
 ##############################################################################################################################################################################################################
 # Explanation: The zone apex is the throne room—chewbacca-growl.com itself should lead to the ALB.
-resource "aws_route53_record" "chewbacca_apex_alias01" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "www"
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.hidden_alb.dns_name
-    zone_id                = aws_lb.hidden_alb.zone_id
-    evaluate_target_health = true
-  }
-}
 
 
 ############################################
@@ -444,6 +449,7 @@ resource "aws_s3_bucket_public_access_block" "chewbacca_waf_logs_pab01" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+
 }
 
 # Explanation: Connect shield generator to archive vault—WAF -> S3.
@@ -455,7 +461,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "chewbacca_waf_logging_s3_01"
     aws_s3_bucket.star_waf_bucket_uno[0].arn
   ]
 
-  depends_on = [aws_wafv2_web_acl.alb_waf]
+  depends_on = [aws_wafv2_web_acl.alb_waf,aws_wafv2_web_acl_logging_configuration.chewbacca_waf_logging_s3_01]
 }
 
 ############################################
@@ -538,7 +544,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "chewbacca_waf_logging_fireho
     aws_kinesis_firehose_delivery_stream.Star_Firehose_delivery1[0].arn
   ]
 
-  depends_on = [aws_wafv2_web_acl.alb_waf]
+  depends_on = [aws_wafv2_web_acl.alb_waf,aws_wafv2_web_acl_logging_configuration.chewbacca_waf_logging_s3_01]
 }
 
 
