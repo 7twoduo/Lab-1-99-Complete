@@ -56,9 +56,9 @@ variable "db_username" {
   default     = "admin"
 }
 variable "sns_email" {
-  description = ""
+  description = "This is where your email is going to go for log notifications"
   type        = string
-  default     = "markedsync@gmail.com"
+  default     = "email.com" # example "shadonelion@gmail.com
   #Remember you have to confirm your subscription for this to work
 }
 variable "secret_location" {
