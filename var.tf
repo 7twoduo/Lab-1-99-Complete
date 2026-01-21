@@ -58,13 +58,13 @@ variable "db_username" {
 variable "sns_email" {
   description = ""
   type        = string
-  default     = "your@email.com"
+  default     = "markedsync@gmail.com"
   #Remember you have to confirm your subscription for this to work
 }
 variable "secret_location" {
   description = "The location in Secrets Manager to store the RDS credentials"
   type        = string
-  default     = "lab/rds/mysqv2"
+  default     = "lab/rds/mysqv4"
 }
 variable "s3_bucket_no_access" {
   description = "No public access to bucket"
@@ -74,12 +74,12 @@ variable "s3_bucket_no_access" {
 variable "root_domain_name" {
   description = "The domain name for the ALB"
   type        = string
-  default     = "example = unshieldedhollow.click"
+  default     = "unshieldedhollow.click"
 }
 variable "route53_domain_name" {
   description = "value"
   type        = string
-  default     = "example = www.unshieldedhollow.click"
+  default     = "www.unshieldedhollow.click"
 }
 
 variable "alb_domain_name" {
