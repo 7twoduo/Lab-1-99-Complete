@@ -1,6 +1,6 @@
 #s3 Bucket
 resource "aws_s3_bucket" "spire" {
-  bucket = var.s3_bucket
+  bucket = "aws-alb-logs-${var.Environment}-${data.aws_caller_identity.current.account_id}"
   region = var.aws_region
 
   tags = {
@@ -161,6 +161,31 @@ resource "aws_route53_record" "cert_validation" {
   type    = each.value.type
   ttl     = 60
   records = [each.value.record]
+}
+# Explanation: DNS now points to ALB
+resource "aws_route53_record" "hidden_apex_to_alb" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.root_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.hidden_alb.dns_name
+    zone_id                = aws_lb.hidden_alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+# Explanation: www.unshieldedshadow.com also points to ALB — same doorway, different sign.
+resource "aws_route53_record" "hidden_www_to_alb" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "www"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.hidden_alb.dns_name
+    zone_id                = aws_lb.hidden_alb.zone_id
+    evaluate_target_health = true
+  }
 }
 
 
