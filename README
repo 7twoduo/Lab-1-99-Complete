@@ -61,52 +61,11 @@ This lab is intentionally configurable. You are encouraged to change:
 
 Review `variables.tf` carefully before applying.
 
+Destroying
+
+Make sure to clear out the s3 bucket or use ai like claude that will do it for you automatically and you should be good to go
 
 
-## 5️⃣ Importing Existing AWS Resources
-
-In some cases, AWS resources may already exist or Terraform may not automatically receive a resource identifier.
-
-You may see errors such as:
-
-```
-Resource already exists
-No resource identifier returned
-```
-
-In these cases, you must **import the resource into Terraform state**.
-
-**ACM Certificate**
-Example
-terraform import aws_acm_certificate.cert arn:aws:acm:region:account:certificate/xxxx
-
-
-
-## 7️⃣ Recommended Workflow
-
-```bash
-terraform init
-terraform validate
-terraform plan
-terraform apply
-```
-
-For updates:
-
-```bash
-terraform plan
-terraform apply
-```
-
----
-
-## 🧠 Learning Notes
-
-* This lab reflects **real-world AWS + Terraform patterns**
-* Resources are intentionally modular and conditional
-* Breaking and rebuilding (safely) is part of the learning process
-
----
 
 ## 🎉 Enjoy the Code
 
