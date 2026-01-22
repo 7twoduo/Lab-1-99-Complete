@@ -8,6 +8,7 @@ locals {
   account_id     = data.aws_caller_identity.current.account_id
   name_prefix    = var.Environment
 
+
 }
 #                                           Variable Blocks
 variable "Environment" {
@@ -19,6 +20,16 @@ variable "aws_region" {
   description = "The AWS region to deploy resources in"
   type        = string
   default     = "us-east-1"
+}
+variable "public_subnet" {
+  description = "The AWS region to deploy resources in"
+  type        = bool
+  default     = true
+}
+variable "private_subnet" {
+  description = "The AWS region to deploy resources in"
+  type        = bool
+  default     = false
 }
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
@@ -56,9 +67,9 @@ variable "db_username" {
   default     = "admin"
 }
 variable "sns_email" {
-  description = "This is where your email is going to go for log notifications"
+  description = ""
   type        = string
-  default     = "email.com" # example "shadonelion@gmail.com
+  default     = "markedsync@gmail.com"
   #Remember you have to confirm your subscription for this to work
 }
 variable "secret_location" {
@@ -181,3 +192,14 @@ data "aws_ami" "amazon_linux" {
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_elb_service_account" "main" {} 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+
+
+
+#                  Output Blocks
+output "region" {
+  value = data.aws_region.current.region
+}
